@@ -1,0 +1,20 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  windows:
+    name: Windows
+    runs-on: windows-2019
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Build
+        run: msbuild sqf-value.sln
+
+      - name: Run tests
+        run: x64\Debug\sqf-value.exe
