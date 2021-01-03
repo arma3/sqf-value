@@ -86,7 +86,6 @@ private:
         std::cout << "     got:      " << val << std::endl;
         m_failed_tests.push_back(t);
     }
-    template<>
     void test_failed(const test_compare<sqf::value>& t, const sqf::value& val, const sqf::value& reference)
     {
         m_total_count++;

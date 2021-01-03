@@ -3,6 +3,19 @@ name: CI
 on: [push, pull_request]
 
 jobs:
+  linux:
+    name: Linux
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: g++ -std=c++17 -o test sqf-value/test.cpp
+
+      - name: Run tests
+        run: ./test
+
   windows:
     name: Windows
     runs-on: windows-2019
