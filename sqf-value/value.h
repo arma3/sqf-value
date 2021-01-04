@@ -155,6 +155,11 @@ namespace sqf
         bool operator&&(bool other) const { if (m_type != value_type::Boolean) { return false; } return other && as_bool(); }
         bool operator||(bool other) const { if (m_type != value_type::Boolean) { return false; } return other || as_bool(); }
 
+        value operator+(value other) const { if (m_type != value_type::Scalar || other.m_type != value_type::Scalar) { return false; } return as_float() + other.as_float(); }
+        value operator-(value other) const { if (m_type != value_type::Scalar || other.m_type != value_type::Scalar) { return false; } return as_float() - other.as_float(); }
+        value operator*(value other) const { if (m_type != value_type::Scalar || other.m_type != value_type::Scalar) { return false; } return as_float() * other.as_float(); }
+        value operator/(value other) const { if (m_type != value_type::Scalar || other.m_type != value_type::Scalar) { return false; } return as_float() / other.as_float(); }
+
 		explicit operator float() { return as_float(); }
 		explicit operator bool() { return as_bool(); }
 		explicit operator std::string() { return as_string(); }
