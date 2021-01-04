@@ -5,6 +5,8 @@
 #include <vector>
 #include <iostream>
 
+#undef assert
+
 using namespace std::string_literals;
 
 class test
