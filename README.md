@@ -12,7 +12,7 @@ std::cout << s.to_string() << std::endl; /* `"Happyface: "":)"""` */
 // Parsing an array?
 auto arr = sqf::value::parse("[1, 2, 3, 4, 5]");
 // No problem!
-std::cout << arr.as<std::vector<value>>()[4] << std::endl; /* `5` */
+std::cout << float(arr[4]) << std::endl; /* `5` */
 
 // Have numerical stuff to solve?
 sqf::value val = 12.5;
