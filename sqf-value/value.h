@@ -33,42 +33,42 @@
 
 namespace sqf
 {
-	class value
-	{
-	private:
-		enum class value_type
-		{
-			Nil,
-			Array,
-			Boolean,
-			Scalar,
-			String
-		};
-		value_type m_type;
-		std::variant<std::vector<sqf::value>, std::string, bool, float> m_variant;
+    class value
+    {
+    private:
+        enum class value_type
+        {
+            Nil,
+            Array,
+            Boolean,
+            Scalar,
+            String
+        };
+        value_type m_type;
+        std::variant<std::vector<sqf::value>, std::string, bool, float> m_variant;
 
-		inline float as_float() { if (m_type != value_type::Scalar) { m_variant = float{}; } return std::get<float>(m_variant); }
-		inline bool as_bool() { if (m_type != value_type::Boolean) { m_variant = bool{}; } return std::get<bool>(m_variant); }
-		inline std::string as_string() { if (m_type != value_type::String) { m_variant = std::string{}; } return std::get<std::string>(m_variant); }
-		inline std::vector<value>& as_array() { if (m_type != value_type::Array) { m_variant = std::vector<sqf::value>{}; } return std::get<std::vector<sqf::value>>(m_variant); }
+        inline float as_float() { if (m_type != value_type::Scalar) { m_variant = float{}; } return std::get<float>(m_variant); }
+        inline bool as_bool() { if (m_type != value_type::Boolean) { m_variant = bool{}; } return std::get<bool>(m_variant); }
+        inline std::string as_string() { if (m_type != value_type::String) { m_variant = std::string{}; } return std::get<std::string>(m_variant); }
+        inline std::vector<value>& as_array() { if (m_type != value_type::Array) { m_variant = std::vector<sqf::value>{}; } return std::get<std::vector<sqf::value>>(m_variant); }
 
-		inline float as_float() const { if (m_type == value_type::Scalar) { return std::get<float>(m_variant); } return 0; }
-		inline bool as_bool() const { if (m_type == value_type::Boolean) { return std::get<bool>(m_variant); } return false; }
-		inline std::string as_string() const { if (m_type == value_type::String) { return std::get<std::string>(m_variant); } return {}; }
-		inline std::vector<value> as_array() const { if (m_type == value_type::Array) { return std::get<std::vector<sqf::value>>(m_variant); } return {}; }
-	public:
+        inline float as_float() const { if (m_type == value_type::Scalar) { return std::get<float>(m_variant); } return 0; }
+        inline bool as_bool() const { if (m_type == value_type::Boolean) { return std::get<bool>(m_variant); } return false; }
+        inline std::string as_string() const { if (m_type == value_type::String) { return std::get<std::string>(m_variant); } return {}; }
+        inline std::vector<value> as_array() const { if (m_type == value_type::Array) { return std::get<std::vector<sqf::value>>(m_variant); } return {}; }
+    public:
 
-		value() : m_type(value_type::Nil) {}
-		value(double scalarD) : m_type(value_type::Scalar)
-		{
-			m_variant = (float)scalarD;
-		}
-		value(float scalar) : m_type(value_type::Scalar), m_variant(scalar) {}
-		value(int scalar) : m_type(value_type::Scalar), m_variant((float)scalar) {}
-		value(bool boolean) : m_type(value_type::Boolean), m_variant(boolean) {}
-		value(const char* c_str) : m_type(value_type::String), m_variant(std::string(c_str)) {}
-		value(std::string string) : m_type(value_type::String), m_variant(string) {}
-		value(std::initializer_list<value> initializer) : m_type(value_type::Array), m_variant(std::vector(initializer.begin(), initializer.end())) {}
+        value() : m_type(value_type::Nil) {}
+        value(double scalarD) : m_type(value_type::Scalar)
+        {
+            m_variant = (float)scalarD;
+        }
+        value(float scalar) : m_type(value_type::Scalar), m_variant(scalar) {}
+        value(int scalar) : m_type(value_type::Scalar), m_variant((float)scalar) {}
+        value(bool boolean) : m_type(value_type::Boolean), m_variant(boolean) {}
+        value(const char* c_str) : m_type(value_type::String), m_variant(std::string(c_str)) {}
+        value(std::string string) : m_type(value_type::String), m_variant(string) {}
+        value(std::initializer_list<value> initializer) : m_type(value_type::Array), m_variant(std::vector(initializer.begin(), initializer.end())) {}
         template<typename T>
         value(T t) : m_type(value_type::Array), m_variant(std::vector<value>(t.begin(), t.end())) {}
         value(std::vector<value> vec) : m_type(value_type::Array), m_variant(vec) {}
@@ -160,25 +160,25 @@ namespace sqf
         value operator*(value other) const { if (m_type != value_type::Scalar || other.m_type != value_type::Scalar) { return false; } return as_float() * other.as_float(); }
         value operator/(value other) const { if (m_type != value_type::Scalar || other.m_type != value_type::Scalar) { return false; } return as_float() / other.as_float(); }
 
-		explicit operator float() { return as_float(); }
-		explicit operator bool() { return as_bool(); }
-		explicit operator std::string() { return as_string(); }
+        explicit operator float() { return as_float(); }
+        explicit operator bool() { return as_bool(); }
+        explicit operator std::string() { return as_string(); }
 
-		explicit operator float() const { return as_float(); }
-		explicit operator bool() const { return as_bool(); }
-		explicit operator std::string() const { return as_string(); }
-		explicit operator std::vector<value>() const { return as_array(); }
+        explicit operator float() const { return as_float(); }
+        explicit operator bool() const { return as_bool(); }
+        explicit operator std::string() const { return as_string(); }
+        explicit operator std::vector<value>() const { return as_array(); }
 
         // Checks if this sqf::value is an array
-		bool is_array() const { return m_type == value_type::Array; }
+        bool is_array() const { return m_type == value_type::Array; }
         // Checks if this sqf::value is a number
-		bool is_scalar() const { return m_type == value_type::Scalar; }
+        bool is_scalar() const { return m_type == value_type::Scalar; }
         // Checks if this sqf::value is a boolean
-		bool is_boolean() const { return m_type == value_type::Boolean; }
+        bool is_boolean() const { return m_type == value_type::Boolean; }
         // Checks if this sqf::value is a string
-		bool is_string() const { return m_type == value_type::String; }
+        bool is_string() const { return m_type == value_type::String; }
         // Checks if this sqf::value is nil
-		bool is_nil() const { return m_type == value_type::Nil; }
+        bool is_nil() const { return m_type == value_type::Nil; }
 
         // Parses SQF-Value-String into a valid sqf::value
         static value parse(std::string_view view)
@@ -296,82 +296,82 @@ namespace sqf
             // start-char
             char c = *begin;
 
-			// find end
-			std::string_view::const_iterator copy;
-			size_t quotes = 0;
-			for (copy = begin + 1; copy != end; copy++)
-			{
-				if (*copy == c)
-				{
-					copy++;
-					if (copy != end && *copy == c)
-					{
-						quotes++;
-						continue;
-					}
-					else
-					{
-						break;
-					}
-				}
-			}
-			// create string
-			auto len = copy - begin - 2;
-			std::string target;
-			target.reserve(len - quotes);
-			for (begin++; begin != end; begin++)
-			{
-				char cur = *begin;
-				if (*begin == c)
-				{
-					begin++;
-					if (begin != end && *begin == c)
-					{
-						target.append(&cur, &cur + 1);
-						continue;
-					}
-					else
-					{
-						break;
-					}
-				}
-				else
-				{
-					target.append(&cur, &cur + 1);
-				}
-			}
-			return target;
-		}
-		static value parse_boolean(std::string_view::const_iterator& begin, std::string_view::const_iterator& end)
-		{
-			char c = *begin;
-			if (c == 't' || c == 'T')
-			{ // true
-				begin += 4;
-				// begin++; /* t */ if (begin == end) { return true; }
-				// begin++; /* r */ if (begin == end) { return true; }
-				// begin++; /* u */ if (begin == end) { return true; }
-				// begin++; /* e */ if (begin == end) { return true; }
-				return true;
-			}
-			else
-			{ // false
-				begin += 5;
-				// begin++; /* f */ if (begin == end) { return false; }
-				// begin++; /* a */ if (begin == end) { return false; }
-				// begin++; /* l */ if (begin == end) { return false; }
-				// begin++; /* s */ if (begin == end) { return false; }
-				// begin++; /* e */ if (begin == end) { return false; }
-				return false;
-			}
-		}
-		static value parse_scalar(std::string_view& view, std::string_view::const_iterator& begin, std::string_view::const_iterator& end)
-		{
-			size_t size;
-			auto f = std::stof(view.substr(begin - view.begin()).data(), &size);
-			begin += size;
-			return f;
-		}
+            // find end
+            std::string_view::const_iterator copy;
+            size_t quotes = 0;
+            for (copy = begin + 1; copy != end; copy++)
+            {
+                if (*copy == c)
+                {
+                    copy++;
+                    if (copy != end && *copy == c)
+                    {
+                        quotes++;
+                        continue;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+            }
+            // create string
+            auto len = copy - begin - 2;
+            std::string target;
+            target.reserve(len - quotes);
+            for (begin++; begin != end; begin++)
+            {
+                char cur = *begin;
+                if (*begin == c)
+                {
+                    begin++;
+                    if (begin != end && *begin == c)
+                    {
+                        target.append(&cur, &cur + 1);
+                        continue;
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                else
+                {
+                    target.append(&cur, &cur + 1);
+                }
+            }
+            return target;
+        }
+        static value parse_boolean(std::string_view::const_iterator& begin, std::string_view::const_iterator& end)
+        {
+            char c = *begin;
+            if (c == 't' || c == 'T')
+            { // true
+                begin += 4;
+                // begin++; /* t */ if (begin == end) { return true; }
+                // begin++; /* r */ if (begin == end) { return true; }
+                // begin++; /* u */ if (begin == end) { return true; }
+                // begin++; /* e */ if (begin == end) { return true; }
+                return true;
+            }
+            else
+            { // false
+                begin += 5;
+                // begin++; /* f */ if (begin == end) { return false; }
+                // begin++; /* a */ if (begin == end) { return false; }
+                // begin++; /* l */ if (begin == end) { return false; }
+                // begin++; /* s */ if (begin == end) { return false; }
+                // begin++; /* e */ if (begin == end) { return false; }
+                return false;
+            }
+        }
+        static value parse_scalar(std::string_view& view, std::string_view::const_iterator& begin, std::string_view::const_iterator& end)
+        {
+            size_t size;
+            auto f = std::stof(view.substr(begin - view.begin()).data(), &size);
+            begin += size;
+            return f;
+        }
 
-	};
+    };
 }
