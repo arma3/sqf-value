@@ -181,6 +181,10 @@ namespace sqf
         // Parses SQF-Value-String into a valid sqf::value
         static value parse(std::string_view view)
         {
+            if (view.empty())
+            {
+                return {};
+            }
             auto begin = view.begin();
             auto end = view.end();
             auto r = parse_(view, begin, end);
