@@ -255,6 +255,7 @@ namespace sqf
             case '[':
                 return parse_array(view, begin, end);
             case '"':
+            case '\'':
                 return parse_string(begin, end);
             case 't':
             case 'f':
