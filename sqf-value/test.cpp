@@ -5,6 +5,8 @@
 #include <vector>
 #include <iostream>
 
+#undef assert
+
 using namespace std::string_literals;
 
 class test
@@ -86,7 +88,6 @@ private:
         std::cout << "     got:      " << val << std::endl;
         m_failed_tests.push_back(t);
     }
-    template<>
     void test_failed(const test_compare<sqf::value>& t, const sqf::value& val, const sqf::value& reference)
     {
         m_total_count++;
@@ -177,6 +178,23 @@ int main()
             "ToString Test: Array Filled",
             []() { return sqf::value({1, 1.2, false, true, "\"foo\" \"bar\"", {}}).to_string(); }
         });
+
+    tester.assert_equals(sqf::value(3), { "Addition", []() { return sqf::value(1) + sqf::value(2); } });
+    tester.assert_equals(sqf::value(3), { "Addition (double)", []() { return sqf::value(1) + 2.0; } });
+    tester.assert_equals(sqf::value(3), { "Addition (float)", []() { return sqf::value(1) + 2.0f; } });
+    tester.assert_equals(sqf::value(3), { "Addition (int)", []() { return sqf::value(1) + 2; } });
+    tester.assert_equals(sqf::value(3), { "Subtraction", []() { return sqf::value(5) - sqf::value(2); } });
+    tester.assert_equals(sqf::value(3), { "Subtraction (double)", []() { return sqf::value(5) - 2.0; } });
+    tester.assert_equals(sqf::value(3), { "Subtraction (float)", []() { return sqf::value(5) - 2.0f; } });
+    tester.assert_equals(sqf::value(3), { "Subtraction (int)", []() { return sqf::value(5) - 2; } });
+    tester.assert_equals(sqf::value(6), { "Multiplication", []() { return sqf::value(2) * sqf::value(3); } });
+    tester.assert_equals(sqf::value(6), { "Multiplication (double)", []() { return sqf::value(2) * 3.0; } });
+    tester.assert_equals(sqf::value(6), { "Multiplication (float)", []() { return sqf::value(2) * 3.0f; } });
+    tester.assert_equals(sqf::value(6), { "Multiplication (int)", []() { return sqf::value(3) * 2; } });
+    tester.assert_equals(sqf::value(3), { "Division", []() { return sqf::value(6) / sqf::value(2); } });
+    tester.assert_equals(sqf::value(3), { "Division (double)", []() { return sqf::value(6) / 2.0; } });
+    tester.assert_equals(sqf::value(3), { "Division (float)", []() { return sqf::value(6) / 2.0f; } });
+    tester.assert_equals(sqf::value(3), { "Division (int)", []() { return sqf::value(6) / 2; } });
 
     tester.assert_true({ "== Test: NIL",             []() { return sqf::value() == sqf::value(); } });
     tester.assert_true({ "== Test: C string",        []() { return sqf::value("test") == "test"s; } });

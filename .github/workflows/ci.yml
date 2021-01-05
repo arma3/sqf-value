@@ -1,0 +1,46 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  linux:
+    name: Linux
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: g++ -std=c++17 -o test sqf-value/test.cpp
+
+      - name: Run tests
+        run: ./test
+
+  macos:
+    name: macOS
+    runs-on: macos-10.15
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Build
+        run: clang++ -std=c++17 -o test sqf-value/test.cpp
+
+      - name: Run tests
+        run: ./test
+
+  windows:
+    name: Windows
+    runs-on: windows-2019
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v2
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1
+
+      - name: Build
+        run: msbuild sqf-value.sln
+
+      - name: Run tests
+        run: x64\Debug\sqf-value.exe
