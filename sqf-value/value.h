@@ -194,7 +194,7 @@ namespace sqf
         }
 
         // Transforms value into valid SQF-Value-String
-        std::string to_string() const
+        std::string to_string(bool escape = true) const
         {
             switch (m_type)
             {
@@ -211,7 +211,7 @@ namespace sqf
                     {
                         sstream << ',';
                     }
-                    sstream << it.to_string();
+                    sstream << it.to_string(escape);
                     flag = true;
                 }
                 sstream << ']';
@@ -227,20 +227,27 @@ namespace sqf
             }
             case value_type::String:
             {
-                size_t quotes = std::count(std::get<std::string>(m_variant).begin(), std::get<std::string>(m_variant).end(), '"');
-                std::string out;
-                out.reserve(std::get<std::string>(m_variant).size() + quotes + 2);
-                out.append("\"");
-                for (auto c : std::get<std::string>(m_variant))
+                if (escape)
                 {
-                    out.append(&c, &c + 1);
-                    if (c == '"')
+                    size_t quotes = std::count(std::get<std::string>(m_variant).begin(), std::get<std::string>(m_variant).end(), '"');
+                    std::string out;
+                    out.reserve(std::get<std::string>(m_variant).size() + quotes + 2);
+                    out.append("\"");
+                    for (auto c : std::get<std::string>(m_variant))
                     {
-                        out.append("\"");
+                        out.append(&c, &c + 1);
+                        if (c == '"')
+                        {
+                            out.append("\"");
+                        }
                     }
+                    out.append("\"");
+                    return { out };
                 }
-                out.append("\"");
-                return { out };
+                else
+                {
+                    return std::get<std::string>(m_variant);
+                }
             }
             default:
                 return {};
