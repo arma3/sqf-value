@@ -272,7 +272,7 @@ namespace sqf
             default:
                 ++begin;
                 if (begin != end) { goto parse_start; }
-                break;
+                return {};
             }
         }
         static value parse_array(std::string_view& view, std::string_view::const_iterator& begin, std::string_view::const_iterator& end)
@@ -288,7 +288,7 @@ namespace sqf
             default:
                 values.emplace_back(parse_(view, begin, end));
                 if (begin != end) { goto parse_start; }
-                break;
+                return {};
             }
         }
         static value parse_string(std::string_view::const_iterator& begin, std::string_view::const_iterator& end)
