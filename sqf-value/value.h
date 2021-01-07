@@ -45,7 +45,7 @@ namespace sqf
             String
         };
         value_type m_type;
-        std::variant<std::vector<sqf::value>, std::string, bool, float> m_variant;
+        std::variant<std::monostate, std::vector<sqf::value>, std::string, bool, float> m_variant;
 
         inline float as_float() { if (m_type != value_type::Scalar) { m_variant = float{}; } return std::get<float>(m_variant); }
         inline bool as_bool() { if (m_type != value_type::Boolean) { m_variant = bool{}; } return std::get<bool>(m_variant); }
@@ -73,8 +73,8 @@ namespace sqf
         value(T t) : m_type(value_type::Array), m_variant(std::vector<value>(t.begin(), t.end())) {}
         value(std::vector<value> vec) : m_type(value_type::Array), m_variant(vec) {}
 
-        value& at(size_t index) { return std::get<std::vector<value>>(m_variant)[index]; }
-        value& operator[](size_t index) { return at(index); }
+        value& at(size_t m_index) { return std::get<std::vector<value>>(m_variant)[m_index]; }
+        value& operator[](size_t m_index) { return at(m_index); }
 
         // Tests two sqf::value's for equality.
         // If they are arrays, comparison is executed deep.
@@ -391,4 +391,16 @@ namespace sqf
     {
         return value::parse(std::string_view(str, str + size));
     }
+
+    template<typename T> inline bool is(const sqf::value& val) { return false; }
+    template<> inline bool is<float>(const sqf::value& val) { return val.is_scalar(); }
+    template<> inline bool is<std::string>(const sqf::value& val) { return val.is_string(); }
+    template<> inline bool is<std::vector<sqf::value>>(const sqf::value& val) { return val.is_array(); }
+    template<> inline bool is<bool>(const sqf::value& val) { return val.is_boolean(); }
+    template<> inline bool is<void>(const sqf::value& val) { return val.is_nil(); }
+    template<typename T> inline T get(const sqf::value& val);
+    template<> inline float get<float>(const sqf::value& val) { return float(val); }
+    template<> inline std::string get<std::string>(const sqf::value& val) { return std::string(val); }
+    template<> inline std::vector<sqf::value> get<std::vector<sqf::value>>(const sqf::value& val) { return std::vector<sqf::value>(val); }
+    template<> inline bool get<bool>(const sqf::value& val) { return bool(val); }
 }
