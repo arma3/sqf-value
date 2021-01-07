@@ -387,7 +387,7 @@ namespace sqf
 
     };
 
-    value operator "" sqf(const char* str, size_t size)
+    value operator "" _sqf(const char* str, size_t size)
     {
         return value::parse(std::string_view(str, size));
     }
