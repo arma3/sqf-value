@@ -389,7 +389,7 @@ namespace sqf
 
     value operator "" sqf(const char* str, size_t size)
     {
-        return value::parse(std::string_view(str, str + size));
+        return value::parse(std::string_view(str, size));
     }
 
     template<typename T> inline bool is(const sqf::value& val) { return false; }
