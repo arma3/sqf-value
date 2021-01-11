@@ -398,6 +398,7 @@ namespace sqf
     template<> inline bool is<std::vector<sqf::value>>(const sqf::value& val) { return val.is_array(); }
     template<> inline bool is<bool>(const sqf::value& val) { return val.is_boolean(); }
     template<> inline bool is<void>(const sqf::value& val) { return val.is_nil(); }
+
     template<typename T> inline T get(const sqf::value& val);
     template<> inline float get<float>(const sqf::value& val) { return float(val); }
     template<> inline std::string get<std::string>(const sqf::value& val) { return std::string(val); }
