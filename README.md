@@ -6,12 +6,92 @@ As alternative, you may also add this as submodule and setup your environment li
 
 # Components
 ## Methodhost
+For using *methodhost*, you need to add `#include "methodhost.hpp"` to the top of your C++ file and
+add the following method to it:
+```cpp
+sqf::methodhost& sqf::methodhost::instance()
+{
+    using namespace std::string_literals;
+    static sqf::methodhost h({
+        });
+    return h;
+}
+```
+Adding methods then can be done, by simply adding it to the initializer list:
+```cpp
+sqf::methodhost h({
+    { "my_fancy_method", { sqf::method::create(
+        [](
+            // required SCALAR value at index 0
+            float req_scalar,
+            // required STRING value at index 1
+            std::string string,
+            // required BOOLEAN value at index 2
+            bool boolean,
+            // optional ARRAY value at index 3
+            std::optional<std::vector<sqf::value>> opt_array)
+        // note that sqf::methodhost::ret<Tok, Terr> is for returning either
+        // a good result or an error result. You also may return any other supported type
+        // instead
+        -> sqf::methodhost::ret<float, std::string> {
+            ...
+            // To return a value, you can either do one of the following:
+            return { 1.0, {} }; // ok
+            return { {}, "something broke" }; // error
+            return 1.0; // ok - requires that the error and ok types are different
+            return "something broke"; // err - requires that the error and ok types are different
+            return sqf::methodhost::ret<float, std::string>::ok(1.0); // ok
+            return sqf::methodhost::ret<float, std::string>::err("something broke"); // error
+        }
+    ), ... } },
+};
+```
+and the methodhost will mangle the functions properly.
+Note that `std::optional<...>` can be used for optional parameters and that overloading works only
+on the parameters.
+
+
+To then use the methodhost, you use the following code:
+```cpp
+__declspec (dllexport) int __stdcall RVExtensionArgs(char* output, int outputSize, const char* function, const char** argv, int argc)
+{
+    auto res = sqf::methodhost::instance().execute(output, outputSize, function, argv, argc);
+    return res;
+}
+```
+
+on the SQF side, scripts can call the extension using:
+```sqf
+params ["_method", "_args"];
+private _result = "";
+private _longResult = nil;
+// do a call for an extra variable scope
+0 call {
+    ("extFileIO" callExtension [_method, _args]) params ["_resultData", "_returnCode", "_errorCode"];
+    if (_errorCode != 0) then { throw _errorCode; };
+    switch _returnCode do {
+        case -1: { _result = (parseSimpleArray format["[%1]", _resultData]) select 0; throw _result; };
+        case 0: { _result = (parseSimpleArray format["[%1]", _resultData]) select 0; };
+        case 1: { _longResult = (parseSimpleArray format["[%1]", _resultData]) select 0; };
+    };
+};
+// while in long result, keep polling
+while { !isNil "_longResult" } do
+{
+    ("extFileIO" callExtension ["?", _longResult]) params ["_resultData", "_returnCode", "_errorCode"];
+    if (_errorCode != 0) then { throw _errorCode; };
+    switch _returnCode do {
+        case -1: { _result = (parseSimpleArray format["[%1]", _result + _resultData]) select 0; throw _result; };
+        case 0: { _result = (parseSimpleArray format["[%1]", _result + _resultData]) select 0; _longResult = nil; };
+        case 1: { _result = _result + _resultData; };
+    };
+};
+_result
+```
 
 ## SQF-Value
-### How to use
-
 Using *sqf-value* is rather straight forward.
-You just add the `#include "value.h"` to the top of your C++ file and can start going!
+You just add the `#include "value.hpp"` to the top of your C++ file and can start going!
 
 ```cpp
 // Creating a string
