@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build
-        run: g++ -std=c++17 -o test sqf-value/test.cpp
+        run: g++ -std=c++17 -o test sqf-value/tests.cpp
 
       - name: Run tests
         run: ./test
@@ -24,7 +24,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Build
-        run: clang++ -std=c++17 -o test sqf-value/test.cpp
+        run: clang++ -std=c++17 -o test sqf-value/tests.cpp
 
       - name: Run tests
         run: ./test
