@@ -54,7 +54,7 @@ namespace sqf
                 // for every Arg, either...
                 (... && (
                 // the value provides that argument and its the correct type, or...
-                (IndexSequence < values.size() && sqf::is<sqf::meta::get_type<Args>::type>(values[IndexSequence])) ||
+                (IndexSequence < values.size() && sqf::is<typename sqf::meta::get_type<Args>::type>(values[IndexSequence])) ||
                 // the value does not provide that argument and the arg is an optional
                 (IndexSequence >= values.size() && sqf::meta::is_optional_v<Args>)
                 ));
@@ -65,7 +65,7 @@ namespace sqf
             auto res = // call the function with every type in the value set,
                 // padding with empty std::optionals otherwise
                 std::invoke(f,
-                    (IndexSequence < values.size() ? sqf::get<sqf::meta::get_type<Args>::type>(values[IndexSequence])
+                    (IndexSequence < values.size() ? sqf::get<typename sqf::meta::get_type<Args>::type>(values[IndexSequence])
                         : sqf::meta::def_value<Args>::value())...);
             return ret<value, value>::ok(res);
         }
@@ -74,7 +74,7 @@ namespace sqf
             auto res = // call the function with every type in the value set,
                 // padding with empty std::optionals otherwise
                 std::invoke(f,
-                    (IndexSequence < values.size() ? sqf::get<sqf::meta::get_type<Args>::type>(values[IndexSequence])
+                    (IndexSequence < values.size() ? sqf::get<typename sqf::meta::get_type<Args>::type>(values[IndexSequence])
                         : sqf::meta::def_value<Args>::value())...);
             if (res.is_ok()) { return ret<value, value>::ok(res.get_ok()); }
             return ret<value, value>::err(res.get_err());
